@@ -38,7 +38,8 @@ namespace EindWerkProg3
             Console.WriteLine("Provincies Created..");
             MakeRapport();
             Console.WriteLine("Rapport Created..");
-            CreateDataFile();
+            //CreateDataFile();
+            Testing();
             Console.WriteLine("Data Files Created..");
         }
         public static void ImportData()
@@ -198,7 +199,7 @@ namespace EindWerkProg3
                 int straatId = segment.Key;
                 Graaf graaf = new Graaf(graagID++);
                 graaf.BuildGraaf(segment.Value);
-                Straat straat = new Straat(straatId, Data.straatIdEnStraatNaam[segment.Key], graaf, segment.Key);
+                Straat straat = new Straat(straatId, Data.straatIdEnStraatNaam[segment.Key], graaf);
                 Data.alleStraten.Add(straatId, straat);
             }
         }
@@ -206,7 +207,7 @@ namespace EindWerkProg3
         {
             foreach(KeyValuePair<int, Straat> straat in Data.alleStraten)
             {
-                int straatId = straat.Value.straatId;
+                int straatId = straat.Value.Id;
                 if (Data.wrGemeenteId.ContainsKey(straatId))
                 {
                     int gemeenteId = Data.wrGemeenteId[straatId];
@@ -356,7 +357,123 @@ namespace EindWerkProg3
                 formatter.Serialize(s, Data.alleProvincies);
             }
         }
+        public static void Testing()/// changing datafile()
+        {
+            string basePath = "D:\\Hogent\\Programmeren\\Programmeren 3\\LABO 1\\";
 
+            //Writing alleSegmenten to textFile
+            if (File.Exists(basePath + "alleSegmenten.txt"))
+                File.Delete(basePath + "alleSegmenten.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "alleSegmenten.txt"))
+            {
+                foreach(KeyValuePair<int, List<Segment>> seg in Data.alleSegmenten)
+                {
+                    foreach(Segment segment in seg.Value)
+                    {
+                        string vertecies = "";
+                        foreach(Punt p in segment.Vertices)
+                        {
+                            vertecies += $"{p.X}|{p.Y}";
+                        }
+
+                        s.WriteLine($"{segment.SegmentID} ,{vertecies}");
+                    }
+                    
+                }
+            }
+            //Writing alleStraten to textFile
+
+            if (File.Exists(basePath + "alleStraten.txt"))
+                File.Delete(basePath + "alleStraten.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "alleStraten.txt"))
+            {
+                foreach(KeyValuePair<int, Straat> straat in Data.alleStraten)
+                {
+                    s.WriteLine($"{straat.Value.Id}, {straat.Value.StraatNaam}");
+                }
+            }
+
+            //Writing alleGemeentes to textFile
+
+            if (File.Exists(basePath + "alleGemeentes.txt"))
+                File.Delete(basePath + "alleGemeentes.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "alleGemeentes.txt"))
+            {
+                foreach (KeyValuePair<int, Gemeente> gemeente in Data.alleGemeentes)
+                {
+                    s.WriteLine($"{gemeente.Value.Id}, {gemeente.Value.GemeenteNaam}");
+                }
+            }
+
+            //Writing alleProvincies to textFile
+            if (File.Exists(basePath + "alleProvincies.txt"))
+                File.Delete(basePath + "alleProvincies.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "alleProvincies.txt"))
+            {
+                foreach(KeyValuePair<int, Provincie> provincie in Data.alleProvincies)
+                {
+                    s.WriteLine($"{provincie.Value.Id}, {provincie.Value.ProvincieNaam}");
+                }
+            }
+
+
+
+
+            // CONNECTION FILES //
+
+            //Writing ProvincieID_GemeenteID to textFile
+            if (File.Exists(basePath + "ProvincieID_GemeenteID.txt"))
+                File.Delete(basePath + "ProvincieID_GemeenteID.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "ProvincieID_GemeenteID.txt"))
+            {
+                foreach(KeyValuePair<int, Provincie> provincie in Data.alleProvincies)
+                {
+                    foreach(Gemeente gemeente in provincie.Value.gemeentes)
+                    {
+                        s.WriteLine($"{provincie.Value.Id},{gemeente.Id}");
+                    }
+                }
+            }
+
+            //Writing GemeenteID_StraatID to textFile
+            if (File.Exists(basePath + "GemeenteID_StraatID.txt"))
+                File.Delete(basePath + "GemeenteID_StraatID.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "GemeenteID_StraatID.txt"))
+            {
+                foreach (KeyValuePair<int, Gemeente> gemeente in Data.alleGemeentes)
+                {
+                    foreach (Straat straat in gemeente.Value.Straten)
+                    {
+                        s.WriteLine($"{gemeente.Value.Id},{straat.Id}");
+                    }
+                }
+            }
+
+            //Writing StraatID_SegmentID to textFile
+            if (File.Exists(basePath + "StraatID_SegmentID.txt"))
+                File.Delete(basePath + "StraatID_SegmentID.txt");
+
+            using (StreamWriter s = File.CreateText(basePath + "StraatID_SegmentID.txt"))
+            {
+                foreach(KeyValuePair<int, Straat> straat in Data.alleStraten)
+                {
+                    foreach(KeyValuePair<Knoop, List<Segment>> segmenten in straat.Value.Graaf.Map)
+                    {
+                        foreach(Segment segment in segmenten.Value)
+                        {
+                            s.WriteLine($"{straat.Value.Id}, {segment.SegmentID}");
+                        }
+                    }
+                }
+            }
+
+        }
         public static string getBetween(string strSource, string strStart, string strEnd)
         {
             int Start, End;

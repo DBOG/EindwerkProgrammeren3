@@ -10,15 +10,15 @@ namespace EindWerkProg3
         public int Id { get; set; }
         public string StraatNaam { get; set; }
         public Graaf Graaf { get; set; }
-        public int straatId { get; set; }
 
 
-        public Straat(int id, string strNaam, Graaf g, int strId)
+
+        public Straat(int id, string strNaam, Graaf g)
         {
             Id = id;
             StraatNaam = strNaam;
             Graaf = g;
-            straatId = strId;
+
         }
         public List<Knoop> getKnopen()
         {

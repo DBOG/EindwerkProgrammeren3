@@ -26,6 +26,9 @@ namespace EindWerkProg3
         }
         public void showStraat()
         {
+            Console.WriteLine("Straat ID: " + Id);
+            Console.WriteLine("Straat Naam: " + StraatNaam);
+            Graaf.showGraaf();
         }
         public double getStraatLengte()
         {

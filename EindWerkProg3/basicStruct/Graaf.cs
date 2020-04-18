@@ -61,7 +61,14 @@ namespace EindWerkProg3
         public void showGraaf()
         {
             Console.WriteLine("Graaf id: " + graafId);
-            Console.WriteLine("MapCount: " + Map.Count);
+            
+            foreach(KeyValuePair<Knoop, List<Segment>> map in Map)
+            {
+                foreach(Segment s in map.Value)
+                {
+                    Console.WriteLine(s.ToString());
+                }
+            }
             
         }
     }

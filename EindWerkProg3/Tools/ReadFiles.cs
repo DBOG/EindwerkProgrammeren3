@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+
 
 namespace EindWerkProg3
 {
@@ -38,8 +37,7 @@ namespace EindWerkProg3
             Console.WriteLine("Provincies Created..");
             MakeRapport();
             Console.WriteLine("Rapport Created..");
-            //CreateDataFile();
-            Testing();
+            CreateDataFiles();
             Console.WriteLine("Data Files Created..");
         }
         public static void ImportData()
@@ -193,11 +191,10 @@ namespace EindWerkProg3
         }
         public static void CreateStraten()
         {
-            int graagID = 0;
             foreach(KeyValuePair<int, List<Segment>> segment in Data.alleSegmenten)
             {
                 int straatId = segment.Key;
-                Graaf graaf = new Graaf(graagID++);
+                Graaf graaf = new Graaf(straatId);
                 graaf.BuildGraaf(segment.Value);
                 Straat straat = new Straat(straatId, Data.straatIdEnStraatNaam[segment.Key], graaf);
                 Data.alleStraten.Add(straatId, straat);
@@ -293,71 +290,7 @@ namespace EindWerkProg3
             byte[] info = new UTF8Encoding(true).GetBytes(value);
             fs.Write(info, 0, info.Length);
         }
-        public static void CreateDataFile()
-        {
-            string basePath = "D:\\Hogent\\Programmeren\\Programmeren 3\\LABO 1\\";
-            IFormatter formatter = new BinaryFormatter();
-
-            //Writing alleKnopen to binaryFile
-
-            if (File.Exists(basePath + "alleKnopen.bin"))
-                File.Delete(basePath + "alleKnopen.bin");
-
-            using (FileStream s = File.Create(basePath + "alleKnopen.bin"))
-            {
-                formatter.Serialize(s, Data.alleKnopen);
-            }
-
-            //Writing alleSegmenten to binaryFile
-
-            if (File.Exists(basePath + "alleSegmenten.bin"))
-                File.Delete(basePath + "alleSegmenten.bin");
-
-            using (FileStream s = File.Create(basePath + "alleSegmenten.bin"))
-            {
-                formatter.Serialize(s, Data.alleSegmenten);
-            }
-
-            //Writing alleGrafen to binaryFile
-
-            if (File.Exists(basePath + "alleGrafen.bin"))
-                File.Delete(basePath + "alleGrafen.bin");
-
-            using (FileStream s = File.Create(basePath + "alleGrafen.bin"))
-            {
-                formatter.Serialize(s, Data.alleGrafen);
-            }
-
-            //Writing alleStraten to binaryFile
-
-            if (File.Exists(basePath + "alleStraten.bin"))
-                File.Delete(basePath + "alleStraten.bin");
-
-            using (FileStream s = File.Create(basePath + "alleStraten.bin"))
-            {
-                formatter.Serialize(s, Data.alleStraten);
-            }
-
-            //Writing alleGemeentes to binaryFile
-
-            if (File.Exists(basePath + "alleGemeentes.bin"))
-                File.Delete(basePath + "alleGemeentes.bin");
-
-            using (FileStream s = File.Create(basePath + "alleGemeentes.bin"))
-            {
-                formatter.Serialize(s, Data.alleGemeentes);
-            }
-
-            //Writing alleProvincies to binaryFile
-            if (File.Exists(basePath + "alleProvincies.bin"))
-                File.Delete(basePath + "alleProvincies.bin");
-
-            using (FileStream s = File.Create(basePath + "alleProvincies.bin"))
-            {
-                formatter.Serialize(s, Data.alleProvincies);
-            }
-        }
-        public static void Testing()/// changing datafile()
+        public static void CreateDataFiles()/// changing datafile()
         {
             string basePath = "D:\\Hogent\\Programmeren\\Programmeren 3\\LABO 1\\";
 
@@ -374,10 +307,10 @@ namespace EindWerkProg3
                         string vertecies = "";
                         foreach(Punt p in segment.Vertices)
                         {
-                            vertecies += $"{p.X}|{p.Y}";
+                            vertecies += $"{p.X}|{p.Y} ";
                         }
 
-                        s.WriteLine($"{segment.SegmentID} ,{vertecies}");
+                        s.WriteLine($"{segment.SegmentID} ,{vertecies}, {segment.BeginKnoop.KnoopID}, {segment.EindKnoop.KnoopID}");
                     }
                     
                 }

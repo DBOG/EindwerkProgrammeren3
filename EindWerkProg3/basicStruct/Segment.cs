@@ -38,7 +38,7 @@ namespace EindWerkProg3
         }
         public override string ToString()
         {
-            return $" SegmentID: {SegmentID}\n BeginKnoop: {BeginKnoop.ToString()}\n EindKnoop: {EindKnoop.ToString()}\n Verteces: {VertecesToString()}";
+            return $"\n\tSegmentID: {SegmentID}\n\t\tBeginKnoop: {BeginKnoop.ToString()}\n\t\tEindKnoop: {EindKnoop.ToString()}\n\n\t\tVerteces: {VertecesToString()}";
         }
     }
 }

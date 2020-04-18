@@ -113,6 +113,8 @@ namespace EindWerkProg3
                                                                  CREATE TABLE [Segment] (
 	                                                             SegmentID integer NOT NULL,
 	                                                             Vertecies varchar(max) NOT NULL,
+                                                                 BeginKnoopID integer NOT NULL,
+                                                                 EindKnoopID integer NOT NULL,
                                                                  CONSTRAINT [PK_SEGMENT] PRIMARY KEY CLUSTERED
                                                                  ( [SegmentID] ASC ) WITH (IGNORE_DUP_KEY = OFF)
                                                                  )
@@ -198,6 +200,8 @@ namespace EindWerkProg3
             segmentTable.TableName = "Segment";
             segmentTable.Columns.Add(new DataColumn("SegmentID", typeof(int)));
             segmentTable.Columns.Add(new DataColumn("Vertecies", typeof(string)));
+            segmentTable.Columns.Add(new DataColumn("BeginKnoopID", typeof(int)));
+            segmentTable.Columns.Add(new DataColumn("EindKnoopID", typeof(int)));
             dataset.Tables.Add(segmentTable);
 
 
@@ -320,7 +324,7 @@ namespace EindWerkProg3
             {
                 if (!usedIDs.Contains(int.Parse(segment[0])))
                 {
-                    dataset.Tables["Segment"].Rows.Add(int.Parse(segment[0]), segment[1]);
+                    dataset.Tables["Segment"].Rows.Add(int.Parse(segment[0]), segment[1], int.Parse(segment[2]), int.Parse(segment[3]));
                     usedIDs.Add(int.Parse(segment[0]));
                 }// check if there are duplicate segment id's
             }

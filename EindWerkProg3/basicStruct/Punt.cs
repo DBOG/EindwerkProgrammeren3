@@ -26,7 +26,7 @@ namespace EindWerkProg3
 
         public override string ToString()
         {
-            return $"X: {X}|| Y: {Y}";
+            return $"\n\t\t\tX: {X}|| Y: {Y}";
         }
     }
 }

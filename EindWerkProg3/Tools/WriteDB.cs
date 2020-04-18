@@ -309,15 +309,15 @@ namespace EindWerkProg3
 
             foreach(string[] provincie in alleProvincies)
             {
-                dataset.Tables["Provincie"].Rows.Add(int.Parse(provincie[0]), provincie[1]);
+                dataset.Tables["Provincie"].Rows.Add(int.Parse(provincie[0]), provincie[1].Trim());
             }
             foreach (string[] gemeente in alleGemeentes)
             {
-                dataset.Tables["Gemeente"].Rows.Add(int.Parse(gemeente[0]), gemeente[1]);
+                dataset.Tables["Gemeente"].Rows.Add(int.Parse(gemeente[0]), gemeente[1].Trim());
             }
             foreach (string[] straat in alleStraten)
             {
-                dataset.Tables["Straat"].Rows.Add(int.Parse(straat[0]), straat[1]);
+                dataset.Tables["Straat"].Rows.Add(int.Parse(straat[0]), straat[1].Trim());
             }
             List<int> usedIDs = new List<int>();
             foreach (string[] segment in alleSegmenten)

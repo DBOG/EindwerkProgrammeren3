@@ -27,15 +27,19 @@ namespace EindWerkProg3
                     GetStraatIdWithGemeenteNaam(gemeente);
                     break;
                 case 2:
-                    Console.WriteLine("\nGeeft een straat ID in:");
+                    Console.WriteLine("\nGeef een straat ID in:");
                     int id = int.Parse(Console.ReadLine());
                     GetStraatWithStraatID(id).showStraat();
                     break;
                 case 3:
-                    GetStraatWithStraatNaamAndGemeenteNaam();
+                    Console.WriteLine("\nGeef een gemeentenaam in:");
+                    string gemeentenaam = Console.ReadLine();
+                    Console.WriteLine("\nGeef een straatnaam in:");
+                    string straatnaam = Console.ReadLine();
+                    GetStraatWithStraatNaamAndGemeenteNaam(gemeentenaam, straatnaam).showStraat();
                     break;
                 case 4:
-                    GetAlleStratenFromGemeente();
+                    List<Straat> stratenFromGemeente = GetAlleStratenFromGemeente();
                     break;
                 default :
                     Console.WriteLine("Incorrect Input");
@@ -118,13 +122,71 @@ namespace EindWerkProg3
             }
             return BuildStraat(id, straatnaam, vertecies, segmentID, beginKnoopID, eindKnoopID);
         }
-        private static void GetStraatWithStraatNaamAndGemeenteNaam()
+        private static Straat GetStraatWithStraatNaamAndGemeenteNaam(string gemeentenaam ,string straatnaam)
         {
+            string query = @"SELECT Straat.StraatNaam, Segment.Vertecies, Segment.SegmentID, Segment.BeginKnoopID, Segment.EindKnoopID, Gemeente.GemeenteNaam, Straat.StraatID
+                                from Straat
+                                inner join StraatID_SegmentID
+                                   on StraatID_SegmentID.StraatID = Straat.StraatID
+                                inner join Segment
+                                   on StraatID_SegmentID.SegmentID = Segment.SegmentID
+                                inner join GemeenteID_StraatID
+                                   on GemeenteID_StraatID.StraatID = Straat.StraatID
+                                inner join Gemeente
+                                  on GemeenteID_StraatID.StraatID = Straat.StraatID
+                           where Gemeente.GemeenteNaam = @gemeentenaam AND Straat.StraatNaam = @straatnaam";
 
+            List<string> vertecies = new List<string>();
+            List<int> segmentID = new List<int>();
+            List<int> beginKnoopID = new List<int>();
+            List<int> eindKnoopID = new List<int>();
+            int straatID = 0;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            using (SqlCommand command = connection.CreateCommand())
+            {
+                command.CommandText = query;
+                SqlParameter gemeentenaamParam = new SqlParameter();
+                gemeentenaamParam.ParameterName = "@gemeentenaam";
+                gemeentenaamParam.SqlDbType = SqlDbType.VarChar;
+                gemeentenaamParam.Value = gemeentenaam;
+
+                SqlParameter straatnaamParam = new SqlParameter();
+                straatnaamParam.ParameterName = "@straatnaam";
+                straatnaamParam.SqlDbType = SqlDbType.VarChar;
+                straatnaamParam.SqlValue = straatnaam;
+                command.Parameters.Add(gemeentenaamParam);
+                command.Parameters.Add(straatnaamParam);
+
+                connection.Open();
+                try
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        straatID = reader.GetInt32(6);
+                        vertecies.Add(reader.GetString(1));
+                        segmentID.Add(reader.GetInt32(2));
+                        beginKnoopID.Add(reader.GetInt32(3));
+                        eindKnoopID.Add(reader.GetInt32(4));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return BuildStraat(straatID, straatnaam, vertecies, segmentID, beginKnoopID, eindKnoopID);
         }
-        private static void GetAlleStratenFromGemeente()
+        private static List<Straat> GetAlleStratenFromGemeente()
         {
 
+
+            return default;
         }
         private static Straat BuildStraat(int id, string straatnaam, List<string> vertecies,List<int>segmentID, List<int> beginKnoopID, List<int> eindKnoopID)
         {
